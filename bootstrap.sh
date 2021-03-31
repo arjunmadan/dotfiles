@@ -14,6 +14,7 @@ function sync() {
 		--exclude "LICENSE" \
         --exclude "brew_once.sh" \
         --exclude "Brewfile" \
+        --exclude "Brewfile.lock.json" \
         --exclude "brew.sh" \
         --exclude ".oh-my-zsh" \
 		-avh --no-perms . ~;
