@@ -1,117 +1,97 @@
-" pathogen
-"execute pathogen#infect()
+" Don't try to be vi compatible
+set nocompatible
 
-if v:lang =~ "utf8$" || v:lang =~ "UTF-8$"
-   set fileencodings=ucs-bom,utf-8,latin1
-endif
+" Helps force plugins to load correctly when it is turned back on below
+filetype off
 
-set nocompatible	" Use Vim defaults (much better!)
-set bs=indent,eol,start		" allow backspacing over everything in insert mode
-"set ai			" always set autoindenting on
-"set backup		" keep a backup file
-" Tell vim to remember certain things when we exit
-"  '20  :  marks will be remembered for up to 20 previously edited files
-"  <1000 :  will save up to 1000 lines for each register
-"  s1000 : increase the maximum register size from 10 KB to 1000KB
-"  :20  :  up to 20 lines of command-line history will be remembered
-"  %    :  saves and restores the buffer list
-"  n... :  where to save the viminfo files
-"
-" https://stackoverflow.com/questions/17812111/default-buffer-size-to-copy-paste-in-vim
-set viminfo='20,<1000,s1000,:20,%,n~/.viminfo
-set history=50		" keep 50 lines of command line history
-set ruler		" show the cursor position all the time
+" TODO: Load plugins here (pathogen or vundle)
 
-" Switch syntax highlighting on, when the terminal has colors
-" Also switch on highlighting the last used search pattern.
-if &t_Co > 2 || has("gui_running")
-  syntax on
-  set hlsearch
-  set incsearch
-endif
+" Turn on syntax highlighting
+syntax on
 
-filetype plugin on
-
-if &term=="xterm"
-     set t_Co=8
-     set t_Sb=[4%dm
-     set t_Sf=[3%dm
-endif
-
-set nofixeol " don't fix end-of-line errors
-
-" Don't wake up system with blinking cursor:
-" http://www.linuxpowertop.org/known.php
-let &guicursor = &guicursor . ",a:blinkon0"
-
-"set background=dark
-set background=light
-
-set showcmd             " Show (partial) command in status line.
-set showmatch           " Show matching brackets.
-
-highlight ExtraWhitespace ctermbg=red guibg=red
-match ExtraWhitespace /\s\+$/
-autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
-autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-autocmd InsertLeave * match ExtraWhitespace /\s\+$/
-autocmd BufWinLeave * call clearmatches()
-
+" For plugins to load correctly
 filetype plugin indent on
 
-set paste
-"set number
+" TODO: Pick a leader key
+" let mapleader = ","
+
+" Security
+set modelines=0
+
+" Show line numbers
+set number
+
+" Show file stats
 set ruler
-set title
 
-set spell spelllang=en_us
+" Encoding
+set encoding=utf-8
 
-" Don't mark URL-like things as spelling errors
-syn match UrlNoSpell '\w\+:\/\/[^[:space:]]\+' contains=@NoSpell
+" Whitespace
+set wrap
+set textwidth=79
+set formatoptions=tcqrn1
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
+set expandtab
+set noshiftround
 
-" Don't count acronyms / abbreviations as spelling errors
-" (all upper-case letters, at least three characters)
-" Also will not count acronym with 's' at the end a spelling error
-" Also will not count numbers that are part of this
-" Recognizes the following as correct:
-syn match AcronymNoSpell '\<\(\u\|\d\)\{3,}s\?\>' contains=@NoSpell
+" Cursor motion
+set scrolloff=3
+set backspace=indent,eol,start
+set matchpairs+=<:> " use % to jump between pairs
+runtime! macros/matchit.vim
 
+" Move up/down editor lines
+nnoremap j gj
+nnoremap k gk
 
-if has("autocmd")
-        " Enable file type detection
-        filetype on
-	autocmd Filetype html setlocal ts=2 sw=2 expandtab
-	autocmd Filetype ruby setlocal ts=2 sw=2 expandtab
-	autocmd Filetype python setlocal ts=4 sw=4 expandtab
-	autocmd Filetype javascript setlocal ts=4 sw=4 sts=0 noexpandtab
-        " Treat .json files as .js
-        autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
-        autocmd BufNewFile,BufRead *.md setfiletype markdown syntax=markdown
-        autocmd BufNewFile,BufRead *.pp setfiletype ruby syntax=ruby
-endif
+" Allow hidden buffers
+set hidden
 
-" when we reload, tell vim to restore the cursor to the saved position
-augroup JumpCursorOnEdit
- au!
- autocmd BufReadPost *
- \ if expand("<afile>:p:h") !=? $TEMP |
- \ if line("'\"") > 1 && line("'\"") <= line("$") |
- \ let JumpCursorOnEdit_foo = line("'\"") |
- \ let b:doopenfold = 1 |
- \ if (foldlevel(JumpCursorOnEdit_foo) > foldlevel(JumpCursorOnEdit_foo - 1)) |
- \ let JumpCursorOnEdit_foo = JumpCursorOnEdit_foo - 1 |
- \ let b:doopenfold = 2 |
- \ endif |
- \ exe JumpCursorOnEdit_foo |
- \ endif |
- \ endif
- " Need to postpone using "zv" until after reading the modelines.
- autocmd BufWinEnter *
- \ if exists("b:doopenfold") |
- \ exe "normal zv" |
- \ if(b:doopenfold > 1) |
- \ exe "+".1 |
- \ endif |
- \ unlet b:doopenfold |
- \ endif
-augroup END
+" Rendering
+set ttyfast
+
+" Status bar
+set laststatus=2
+
+" Last line
+set showmode
+set showcmd
+
+" Searching
+nnoremap / /\v
+vnoremap / /\v
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+set showmatch
+map <leader><space> :let @/=''<cr> " clear search
+
+" Remap help key.
+inoremap <F1> <ESC>:set invfullscreen<CR>a
+nnoremap <F1> :set invfullscreen<CR>
+vnoremap <F1> :set invfullscreen<CR>
+
+" Textmate holdouts
+
+" Formatting
+map <leader>q gqip
+
+" Visualize tabs and newlines
+set listchars=tab:▸\ ,eol:¬
+" Uncomment this to enable by default:
+" set list " To enable by default
+" Or use your leader key + l to toggle on/off
+map <leader>l :set list!<CR> " Toggle tabs and EOL
+
+" Color scheme (terminal)
+set t_Co=256
+set background=dark
+let g:solarized_termcolors=256
+let g:solarized_termtrans=1
+" put https://raw.github.com/altercation/vim-colors-solarized/master/colors/solarized.vim
+" in ~/.vim/colors/ and uncomment:
+" colorscheme solarized
