@@ -76,3 +76,5 @@ brew "k9s"
 brew "zsh-completions"
 brew "maven"
 brew "adoptopenjdk8"
+brew "kustomize"
+
