@@ -78,4 +78,6 @@ brew "maven"
 brew "adoptopenjdk8"
 brew "kustomize"
 brew "ansible"
+brew "packer"
+brew "terraform"
 
