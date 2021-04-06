@@ -77,4 +77,5 @@ brew "zsh-completions"
 brew "maven"
 brew "adoptopenjdk8"
 brew "kustomize"
+brew "ansible"
 
