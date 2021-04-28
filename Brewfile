@@ -7,6 +7,7 @@ tap "homebrew/cask-fonts"
 tap "homebrew/cask-versions"
 tap "homebrew/core"
 tap "homebrew/services"
+tap "aws/tap"
 
 cask "adoptopenjdk"
 cask "wireshark"
@@ -80,4 +81,4 @@ brew "kustomize"
 brew "ansible"
 brew "packer"
 brew "terraform"
-
+brew "aws-sam-cli"
